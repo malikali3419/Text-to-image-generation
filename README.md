@@ -16,7 +16,7 @@ This Django project allows you to generate images based on text prompts using th
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/malikali3419/Text-to-image-generation.git
+    git clone 
     cd Text-to-image-generation/
     ```
 
@@ -45,7 +45,6 @@ This Django project allows you to generate images based on text prompts using th
     ```dotenv
     SECRET_KEY="your_secret_key"
     ORG_KEY="your_organization_key"
-    # Add any other environment variables specific to your project
     ```
 
 6. Apply migrations:
