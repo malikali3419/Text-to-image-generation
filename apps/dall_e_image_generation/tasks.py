@@ -81,9 +81,7 @@ def save_image(prompt: str, image_url: str, directory: str = "generated_images")
     """
 
     try:
-        # Ensure the directory exists
         create_directory(directory)
-
         response = requests.get(image_url, timeout=10)
 
         if response.status_code == 200:
