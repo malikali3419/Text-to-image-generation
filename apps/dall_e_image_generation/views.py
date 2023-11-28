@@ -5,6 +5,7 @@ from rest_framework import status
 from apps.dall_e_image_generation.tasks import generate_image
 import logging
 
+logging.basicConfig(filename='activity_log.log', level=logging.INFO)
 class ImageGenerationView(APIView):
     """
     This view handles POST requests to initiate image generation tasks based on provided prompts.

@@ -5,21 +5,20 @@ import requests
 import os
 import logging
 import re
+from image_generation.settings import SECRET_KEY, ORGANIZATION_KEY
 
 class ImageGenerator:
     def __init__(self) -> None:
-        load_dotenv()
-
-        SECRET_KEY = os.getenv('SECRET_KEY')
-        ORGANIZATION_KEY = os.getenv('ORG_KEY')
         self.client = OpenAI(api_key=SECRET_KEY,organization=ORGANIZATION_KEY)
 
     def get_image(self,prompt:str)->str:
-        """This function actake a prompt of image to be generated and sends the prompt to DALL-E 3 which then returns a url of the 
+        """
+        
+        This function takes a prompt of image to be generated and sends the prompt to DALL-E 3 which then returns a url of the 
             generated image.
            args:
                 prompt (str): contains the information of what you want the image to look like.  
-           returns:
+           Returns:
                 image_url(str)
         """
         response = self.client.images.generate(
@@ -32,16 +31,31 @@ class ImageGenerator:
         image_url = response.data[0].url
         return image_url
 
-def sanitize_filename(name:str) -> str:
-    """Sanitize the filename to remove non-alphanumeric characters and limit length."""
-    sanitized = re.sub(r'[^a-zA-Z0-9_]', '_', name)
-    return sanitized[:100]
+def clip_filename(name:str) -> str:
+    """
+    
+    Sanitize the filename to remove non-alphanumeric characters and limit length.
+
+    Args:
+        filename (str): The input filename.
+    Returns:
+        cliped_filename (str): The sanitized and clipped filename.
+
+    """
+    cliped_filename = re.sub(r'[^a-zA-Z0-9_]', '_', name)
+    return cliped_filename[:100]
 
 def create_directory(directory_name:str) -> None:
-    """Create a directory if it does not exist."""
+    """
+    Create a directory if it does not exist.
+
+    Args:
+        directory_name (str): The name of the directory to be created.
+    Returns:
+        it returns None
+    """
     if not os.path.exists(directory_name):
         os.makedirs(directory_name, exist_ok=True)
-    return
 
 def save_image(prompt: str, image_url: str, directory: str = "generated_images") -> bool:
     """
@@ -66,16 +80,15 @@ def save_image(prompt: str, image_url: str, directory: str = "generated_images")
         response = requests.get(image_url, timeout=10)
 
         if response.status_code == 200:
-            filename = os.path.join(directory, sanitize_filename(prompt) + '.png')
+            filename = os.path.join(directory, clip_filename(prompt) + '.png')
             with open(filename, 'wb') as file:
                 file.write(response.content)
             logging.info(f"Image downloaded and saved as {filename}")
-            return True
         else:
             logging.error(f"Failed to download the image. HTTP status code: {response.status_code}")
             return False
 
-    except requests.RequestException as e:
+    except Exception as e:
         logging.error(f"Error occurred while downloading the image: {e}")
         return False
     
@@ -84,5 +97,4 @@ def generate_image(prompt:str) -> None:
     obj = ImageGenerator()
     image_url = obj.get_image(prompt)
     save_image(prompt=prompt,image_url=image_url)
-    print(f"\n\n{image_url}")
     return
