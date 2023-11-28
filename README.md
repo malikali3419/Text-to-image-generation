@@ -68,7 +68,7 @@ This Django project allows you to generate images based on text prompts using th
 9.  Send a POST request to the image generation endpoint:
 
     ```bash
-    curl -X POST -H "Content-Type: application/json" -d '{"prompts": ["Your text prompt here"]}' http://localhost:8000/api/strings/
+    curl -X POST -H "Content-Type: application/json" -d '{"prompts": ["Your text prompt here"]}' http://localhost:8000/api/generate-image/
     ```
 After calling the endpoint, the generated images will be stored in the `generated_images` folder within the project directory.
 
